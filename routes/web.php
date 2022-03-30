@@ -20,5 +20,5 @@ Route::get('/', function () {
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/tasks', 'tasks')->name('tasks');
-    Route::post('/tasks-store', 'store')->name('store');
+    Route::post('/tasks', 'store')->name('store');
 });

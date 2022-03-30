@@ -8,11 +8,13 @@ use App\Models\Task;
 class HomeController extends Controller
 {
     function tasks(){
-        return view('home.tasks');
+        $tasks = Task::all();
+        return view('home.tasks', compact('tasks'));
     }
 
     function store(Request $request){
-        dd($request->description, "test");
         Task::create(request()->only('name', 'description'));
+
+        return back();
     }
 }

@@ -7,10 +7,19 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ route('store') }}" method="POST">
+    <form action="{{ route('store') }}" method="post">
         <input type="text" name="name">
-        <input type="text" name="description">
-        <button type="submit" name="Create Task">Submit</button>
+        <textarea name="description"></textarea>
+        <input type="submit" value="Create Task">
     </form>
+    <h1>Tasks Management</h1>
+    <ul>
+        @foreach ($tasks as $task)
+            <li>
+                {{ $task->name }}<br>
+                {{ $task->description }}
+            </li>
+        @endforeach
+    </ul>
 </body>
 </html>
