@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Task;
 
 class ManageTasksTest extends TestCase
 {
@@ -40,23 +41,89 @@ class ManageTasksTest extends TestCase
         // Tampil hasil task yang telah diinput
         $this->see('My First Task');
         $this->see('This is my first task on my new job.');
+
+    }
+
+    /** @test */
+    public function user_can_make_test_index(){
+// Submit form untuk membuat task baru
+        // dengan field name description kosong
+        $this->post('/tasks', [
+            'name'        => '',
+            'description' => '',
+        ]);
+
+        // Cek pada session apakah ada error untuk field nama dan description
+        $this->assertSessionHasErrors(['name', 'description']);
     }
 
     /** @test */
     public function user_can_browser_tasks_index_page()
     {
-        $this->assertTrue(true);
+        // Generate 3 record task pada table `tasks`.
+        $tasks = Task::factory(3)->create();
+
+        // User membuka halaman Daftar Task.
+        $this->visit('/tasks');
+
+        for($i = 0; $i <= 2; $i++){
+            // User melihat ketiga task tampil pada halaman.
+            $this->see($tasks[$i]->name);
+
+            // User melihat link untuk edit task pada masing-masing item task.
+            $this->seeElement('a', [
+                'href' => url('edit-task/'.$tasks[$i]->id)
+            ]);
+        }
     }
 
     /** @test */
     public function user_can_edit_an_existing_task()
     {
-        $this->assertTrue(true);
+        // Generate 1 record task pada table `tasks`.
+        $task = Task::factory()->create();
+
+        // User membuka halaman Daftar Task.
+        $this->visit('/tasks');
+
+        // Klik tombol edit task
+        $this->click('edit_task_'.$task->id);
+
+        // Lihat URL yang dituju sesuai dengan target
+        $this->seePageIs('/edit-task/1');
+
+        // Tampil form Edit Task
+        $this->seeElement('form', [
+            'id' => 'edit_task_'.$task->id,
+            'action' => url('edit-task-prosess/1')
+        ]);
+
+        // User submit form berisi nama dan deskripsi task yang baru
+        $this->submitForm('Update Task', [
+            'name' => 'Updated Task',
+            'description' => 'Updated task desc'
+        ]);
+
+        // Lihat halaman web ter-redirect ke URL sesuai dengan target
+        $this->visit('/tasks');
+
+        // Record pada database berubah sesuai dengan nama dan deskripsi baru
+        $this->seeInDatabase('tasks', [
+            'id' => $task->id,
+            'name' => 'Updated Task',
+            'description' => 'Updated task desc'
+        ]);
     }
 
     /** @test */
     public function user_can_delete_an_existing_task()
     {
-        $this->assertTrue(true);
+        $task = Task::factory()->create();
+
+        $this->visit('/tasks');
+        $this->seeElement('form', [
+            'action' => url('delete-task-prosess/'.$task->id)
+        ]);
+        $this->submitForm('Delete Task');
     }
 }

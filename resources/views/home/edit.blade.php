@@ -7,21 +7,16 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ route('store') }}" method="post">
+    <form action="{{ route('edit-store', 1) }}" method="post" id="edit_task_1">
         @csrf
         <input type="text" name="name">
         <textarea name="description"></textarea>
-        <input type="submit" value="Create Task">
+        <input type="submit" value="Update Task">
     </form>
     <h1>Tasks Management</h1>
     <ul>
         @foreach ($tasks as $task)
             <a href="{{ route('task-edit', $task->id) }}" id="edit_task_{{ $task->id }}">Edit</a>
-
-            <form action="{{ route('delete-task', $task->id) }}" method="post">
-                @csrf
-                <input type="submit" value="Delete Task">
-            </form>
             <li>
                 {{ $task->name }}<br>
                 {{ $task->description }}
