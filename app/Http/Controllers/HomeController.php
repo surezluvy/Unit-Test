@@ -36,6 +36,28 @@ class HomeController extends Controller
 
     function deleteTask($id){
         Task::find($id)->delete();
-        return redirect('/tasls');
+        return redirect('/tasks');
+    }
+
+    // function toggleTas($id){
+    function toggleTask(Task $task){
+        // $task = Task::first();
+        // if($task->is_done == 0){
+        //     Task::findOrFail($id)->update([
+        //         'is_done' => 1,
+        //     ]);
+        // }else{
+        //     Task::findOrFail($id)->update([
+        //         'is_done' => 0,
+        //     ]);
+        // }
+
+        // return back();
+
+        // DILAKUKAN REFACTORING UNTUK MEMPERSINGKAT
+        // toggleStatus() berada pada file Models
+        $task->toggleStatus();
+
+        return back();
     }
 }

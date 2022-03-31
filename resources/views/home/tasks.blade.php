@@ -20,7 +20,12 @@
 
             <form action="{{ route('delete-task', $task->id) }}" method="post">
                 @csrf
-                <input type="submit" value="Delete Task">
+                <input type="submit" id="delete_task_{{ $task->id }}">
+            </form>
+
+            <form action="{{ route('toggle-task', $task->id) }}" method="post">
+                @csrf
+                <input type="submit" value="Toggle" id="toggle_task_{{ $task->id }}">
             </form>
             <li>
                 {{ $task->name }}<br>

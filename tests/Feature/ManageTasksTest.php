@@ -118,12 +118,68 @@ class ManageTasksTest extends TestCase
     /** @test */
     public function user_can_delete_an_existing_task()
     {
+        // Generate 1 record task pada table `tasks`.
         $task = Task::factory()->create();
 
+        // User membuka halaman Daftar Task.
         $this->visit('/tasks');
-        $this->seeElement('form', [
-            'action' => url('delete-task-prosess/'.$task->id)
+
+        // User tekan tombol "Hapus Task" (tombol dengan id="edit_task_1")
+        // Dimana angka 1 adalah id dari $task
+        $this->press('delete_task_'.$task->id);
+
+        // Lihat halaman web ter-redirect ke halaman daftar task
+        $this->seePageIs('/tasks');
+
+        // Record task hilang dari database
+        $this->dontSeeInDatabase('tasks', [
+            'id' => $task->id,
         ]);
-        $this->submitForm('Delete Task');
     }
+
+    /** @test */
+    // public function user_can_toggle_task_status(){
+    //     // MENGGUNAKAN UNIT TEST ATAU TEST SECARA LANGSUNG KE MODEL
+    //     // JIKA INGIN MENGGUNAKAN FEATURE TEST, MAKA UNCOMMENT!
+
+    //     // Generate 1 record task pada table `tasks`.
+    //     $task = Task::factory()->create();
+
+    //     // dd($task);
+
+    //     // User membuka halaman Daftar Task.
+    //     // $this->visit('/tasks');
+
+    //     // Panggil method `toggleStatus()` pada model `App\Task`
+    //     $task->toggleStatus();
+
+    //     // User tekan tombol dengan id="toggle_task_1"
+    //     // Dimana angka 1 adalah id dari $task
+    //     // $this->press('toggle_task_'.$task->id);
+
+    //     // Lihat halaman web ter-redirect ke halaman daftar task
+    //     // $this->seePageIs('/tasks');
+
+    //     // Kolom is_done pada record task berubah menjadi 1
+    //     $this->seeInDatabase('tasks', [
+    //         'id'      => $task->id,
+    //         'is_done' => 1,
+    //     ]);
+
+    //     // User tekan tombol dengan id="toggle_task_1" (lagi)
+    //     // untuk mengembalikan status task
+    //     // $this->press('toggle_task_'.$task->id);
+
+    //     // Panggil method `toggleStatus()` pada model `App\Task` (lagi)
+    //     $task->toggleStatus();
+
+    //     // Lihat halaman web ter-redirect ke halaman daftar task
+    //     // $this->seePageIs('/tasks');
+
+    //     // Kolom is_done pada record task berubah menjadi 0
+    //     $this->seeInDatabase('tasks', [
+    //         'id'      => $task->id,
+    //         'is_done' => 0,
+    //     ]);
+    // }
 }
